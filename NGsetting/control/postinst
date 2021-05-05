@@ -1,0 +1,13 @@
+#!/bin/sh
+echo "*****************************************"
+echo "*    Vhannibal Autosetting Installed    *"
+echo "*****************************************"
+sleep 2
+echo $LINE
+echo "*****************************************"
+echo "*            Restart Enigma2            *"
+echo "*****************************************"
+sleep 2
+rm -rf /control
+killall -9 enigma2
+exit 0
