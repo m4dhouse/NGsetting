@@ -1,0 +1,22 @@
+<rules>
+	<ruleset name="Italy">		
+		<rule type="marker" position="0">Intrattenimento</rule>
+		<rule type="marker" position="10">Semi-Generalisti</rule>
+		<rule type="marker" position="40">Bambini e Ragazzi</rule>
+		<rule type="marker" position="47">Informazione e Cultura</rule>
+		<rule type="marker" position="57">Sport</rule>
+		<rule type="marker" position="62">Musica</rule>
+		<rule type="marker" position="71">Emittenti Regionali</rule>			
+		<rule type="marker" position="299">Mediaset Premium</rule>
+		<rule type="marker" position="311">Mediaset Premium - Cinema</rule>
+		<rule type="marker" position="325">Mediaset Premium - Reality</rule>
+		<rule type="marker" position="330">Mediaset Premium - Cultura</rule>		
+		<rule type="marker" position="350">Mediaset Premium - Bambini</rule>
+		<rule type="marker" position="369">Mediaset Premium - Calcio</rule>
+		<rule type="marker" position="390">Hot</rule>		
+		<rule type="marker" position="400">Alta Definizione</rule>	
+		<rule type="marker" position="505">Emittenti Regionali</rule>							
+		<rule type="marker" position="800">Servizi On Demand</rule>		
+		<rule type="marker" position="16635">Duplicati</rule>				
+	</ruleset>		
+</rules>
