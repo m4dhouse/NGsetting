@@ -1,5 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: UTF-8 -*-
+# Please don't remove this disclaimer
+# modified by Madhouse to run under Python2/3
 from random import choice
 try:
     from urllib.request import urlopen, Request
@@ -17,9 +19,9 @@ except:
 
 Directory = os.path.dirname(sys.modules[__name__].__file__)
 if not os.path.exists(Directory + '/NGsetting'):
-    os.system('mkdir  ' + Directory + '/NGsetting')
+    os.system('mkdir ' + Directory + '/NGsetting')
 if not os.path.exists(Directory + '/NGsetting/Temp'):
-    os.system('mkdir  ' + Directory + '/NGsetting/Temp')
+    os.system('mkdir ' + Directory + '/NGsetting/Temp')
 
 def ConverDate(data):
     anno = data[:2]
@@ -86,42 +88,12 @@ def Load():
             except:
                 pass
     else:
-        xf = open(Directory + '/NGsetting/Date', 'w')
-        xf.write('AutoTimer = 0\n')
-        if py_version == 2:
-            xf.write('NameSat= Hot Bird 13\xc2\xb0E\n')
-        else:
-            xf.write('NameSat= Hot Bird 13°E\n')
-        xf.write('Data = 0\n')
-        xf.write('Type = 0\n')
-        xf.write('Personal = 0\n')
-        xf.write('DowDate = 0\n')
-        xf.close()
-    return (
-     AutoTimer, NameSat, Data, Type, Personal, DowDate)
+        line = 'AutoTimer = 0\nNameSat = \nData = 0\nType = 0\nPersonal = 0\nDowDate = 0'
+        with open(Directory + '/NGsetting/Date', 'w') as f:
+            f.write(line)
+    return (AutoTimer, NameSat, Data, Type, Personal, DowDate)
 
 def WriteSave(name, autotimer, Type, Data, Personal, DowDate):
-    xf = open(Directory + '/NGsetting/Date', 'w')
-    xf.write('AutoTimer = %s\n' % str(autotimer))
-    xf.write('NameSat = %s\n' % str(name))
-    xf.write('Data = %s\n' % str(Data))
-    xf.write('Type = %s\n' % str(Type))
-    xf.write('Personal = %s\n' % str(Personal))
-    xf.write('DowDate = %s\n' % str(DowDate))
-    xf.close()
-
-def Plugin():
-    try:
-        import requests
-        link = requests.get('http://www.vhannibal.net/asu.php', headers = {'User-Agent': 'Mozilla/5.0'}).text
-        return re.compile('<a href="(.+?)" src="(.+?)">updater</a>').findall(link)
-    except ImportError:
-        req = Request('http://www.vhannibal.net/asu.php')
-        req.add_header('User-Agent', 'VAS14')
-        response = urlopen(req, None, 3)
-        link = response.read()
-        response.close()
-        return re.compile('<a href="(.+?)" src="(.+?)">updater</a>').findall(link)
-    except:
-        return
-    return
+    line = 'AutoTimer = {}\nNameSat = {}\nData = {}\nType = {}\nPersonal = {}\nDowDate = {}'.format(str(autotimer), str(name), str(Data), str(Type), str(Personal), str(DowDate))
+    with open(Directory + '/NGsetting/Date', 'w') as f:
+        f.write(line)

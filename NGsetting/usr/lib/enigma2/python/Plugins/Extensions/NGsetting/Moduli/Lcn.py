@@ -1,5 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: UTF-8 -*-
+# Please don't remove this disclaimer
+# modified by Madhouse to run under Python2/3
 from enigma import eDVBDB, eServiceReference, eServiceCenter
 from Screens.Screen import Screen
 from Screens.MessageBox import MessageBox

@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: UTF-8 -*-
+# Please don't remove this disclaimer
 # modified by Madhouse to run under Python2/3
 from Components.Label import Label
 from random import choice
@@ -25,7 +26,7 @@ from .Moduli.Lcn import *
 from .Moduli.Select import *
 
 HD = getDesktop(0).size()
-Version = '1.4'
+Version = '1.5'
 MinStart = int(choice(range(59)))
 
 class MenuListiSettingE2(MenuList):
@@ -107,21 +108,13 @@ class MenuiSettingE2(Screen, ConfigListScreen):
         self.iTimer.start(1000, True)
         self.iTimer1 = eTimer()
         self.iTimer1.callback.append(self.StartSetting)
-        self.Message = eTimer()
-        self.Message.callback.append(self.MessagePlugin)
         self.OnWriteAuto = eTimer()
         self.OnWriteAuto.callback.append(self.WriteAuto)
         self.StopAutoWrite = False
         self.ExitPlugin = eTimer()
         self.ExitPlugin.callback.append(self.PluginClose)
-        self.Reload = eTimer()
-        self.Reload.callback.append(self.ReloadGui)
         self.onShown.append(self.ReturnSelect)
         self.onShown.append(self.Info)
-        self.VersPlugin = Plugin()
-        if self.VersPlugin:
-            if self.VersPlugin[0][1] != Version:
-                self.Message.start(2000, True)
 
     def PluginClose(self):
         try:
@@ -137,21 +130,6 @@ class MenuiSettingE2(Screen, ConfigListScreen):
             self.MenuB()
         else:
             self.PluginClose()
-
-    def MessagePlugin(self):
-        self.session.openWithCallback(self.DownloadPluginFcn, MessageBox, _('Vhannibal AutoSetting %s is available\nThe update is mandatory, do you want to proceed?\nEnigma will restart') % self.VersPlugin[0][1], MessageBox.TYPE_YESNO)
-
-    def DownloadPluginFcn(self, conf):
-        if conf:
-            if DownloadPlugin('http://www.vhannibal.net/' + self.VersPlugin[0][0]):
-                self.session.open(MessageBox, _('New version %s downloaded successfully\nEnigma will now be restarted...') % self.VersPlugin[0][1], MessageBox.TYPE_INFO)
-                self.Reload.start(2000, True)
-            os.system('rm -rf /tmp/Plugin.zip')
-        else:
-            self.exitplug()
-
-    def ReloadGui(self):
-        quitMainloop(3)
 
     def Select(self):
         AutoTimer, NameSat, Data, Type, Personal, DowDate = Load()
@@ -346,8 +324,6 @@ class MenuiSettingE2(Screen, ConfigListScreen):
 class NgSetting():
 
     def __init__(self, session=None):
-        self.Reload = eTimer()
-        self.Reload.callback.append(self.ReloadGui)
         self.session = session
         self.iTimer1 = eTimer()
         self.iTimer2 = eTimer()
@@ -402,20 +378,6 @@ class NgSetting():
         self.iTimer2.start(1000 * delta2, True)
         self.iTimer3.start(1000 * delta3, True)
 
-    def DownloadPluginFcn(self):
-        if DownloadPlugin('http://www.vhannibal.net/' + self.VersPlugin[0][0]):
-            self.session.open(MessageBox, _('New version %s downloaded successfully\nEnigma will now be restarted...') % self.VersPlugin[0][1], MessageBox.TYPE_INFO)
-            self.Reload.start(2000, True)
-            os.system('rm -fr /tmp/Plugin.zip')
-
-    def ReloadGui(self):
-        quitMainloop(3)
-
-    def CheckUpgradeAnswer(self, conf):
-        if conf:
-            self.DownloadPluginFcn()
-        self.TimerSetting()
-
     def startTimerSetting(self, Auto=False):
         self.AutoTimer, NameSat, Data, self.Type, self.Personal, DowDate = Load()
         def OnDsl():
@@ -431,12 +393,7 @@ class NgSetting():
             for self.date, self.name, self.link in DownloadSetting():
                 if self.name == NameSat:
                     if self.date > Data or Auto:
-                        self.VersPlugin = Plugin()
-                        if self.VersPlugin:
-                            if self.VersPlugin[0][1] != Version:
-                                self.session.openWithCallback(self.CheckUpgradeAnswer, MessageBox, _('To update your settings, you have to install Vhannibal AutoSetting %s\nThe update is mandatory, do you want to proceed?\nEnigma will restart') % self.VersPlugin[0][1], MessageBox.TYPE_YESNO)
-                            else:
-                                self.BackgroundAutoUpdate()
+                        self.BackgroundAutoUpdate()
                     break
         self.TimerSetting()
 
@@ -445,12 +402,13 @@ class NgSetting():
             now = time.time()
             jt = time.localtime(now)
             year = str(jt[0])
-            year = year[2:]
-            DowDate = str(jt[2]).zfill(2) + '/' + str(jt[1]).zfill(2) + '/' + year + ' @ ' + str(jt[3]).zfill(2) + ':' + str(jt[4]).zfill(2) + ':' + str(jt[5]).zfill(2)
+            years = year[2:]
+            DowDate = str(jt[2]).zfill(2) + '/' + str(jt[1]).zfill(2) + '/' + years + ' @ ' + str(jt[3]).zfill(2) + ':' + str(jt[4]).zfill(2) + ':' + str(jt[5]).zfill(2)
             WriteSave(self.name, self.AutoTimer, self.Type, self.date, self.Personal, DowDate)
             eDVBDB.getInstance().reloadServicelist()
             eDVBDB.getInstance().reloadBouquets()
             self.session.open(MessageBox, _('New Setting Vhannibal ') + str(self.name) + _(' of ') + ConverDate_noyear(str(self.date)) + _(' updated'), MessageBox.TYPE_INFO, timeout=5)
+            os.system('rm -rf /usr/lib/enigma2/python/Plugins/Extensions/NGsetting/Moduli/NGsetting/Temp/*')
         else:
             self.session.open(MessageBox, _('Sorry!\nError Download Setting'), MessageBox.TYPE_ERROR, timeout=5)
 

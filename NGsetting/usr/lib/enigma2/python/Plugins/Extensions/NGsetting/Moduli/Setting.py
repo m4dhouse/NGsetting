@@ -1,5 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: UTF-8 -*-
+# Please don't remove this disclaimer
+# modified by Madhouse to run under Python2/3
 from enigma import eTimer
 from random import choice
 import re
@@ -28,21 +30,7 @@ except ImportError:
     pass
 
 Directory = os.path.dirname(sys.modules[__name__].__file__)
-
-MinStart = int(choice(range(59)))
-
-def DownloadPlugin(link):
-    try:
-        url = Request(link, headers={'User-Agent': 'Mozilla/5.0'})
-        with urlopen(url) as response, open('/tmp/Plugin.zip', 'wb') as out_zip:
-            shutil.copyfileobj(response, out_zip)
-        try:
-            os.system('unzip -o /tmp/Plugin.zip -d  /usr/lib/enigma2/python/Plugins/Extensions')
-        except:
-            return
-    except:
-        return
-    return True
+#Directory = '/usr/lib/enigma2/python/Plugins/Extensions/NGsetting/Moduli'
 
 def TimerControl():
     now = time.localtime(time.time())
@@ -79,7 +67,7 @@ def StartSavingTerrestrialChannels():
         inTransponder = False
         inService = False
         try:
-            LamedbFile = open('/etc/enigma2/lamedb')
+            LamedbFile = open('/etc/enigma2/lamedb', 'r')
             while 1:
                 line = LamedbFile.readline()
                 if not line:
@@ -120,7 +108,7 @@ def StartSavingTerrestrialChannels():
     def CreateBouquetForce():
         WritingBouquetTemporary = open(Directory + '/NGsetting/Temp/TerrestrialChannelListArchive', 'w')
         WritingBouquetTemporary.write('#NAME terrestre\n')
-        ReadingTempServicelist = open(Directory + '/NGsetting/Temp/ServiceListOldLamedb').readlines()
+        ReadingTempServicelist = open(Directory + '/NGsetting/Temp/ServiceListOldLamedb', 'r').readlines()
         for jx in ReadingTempServicelist:
             if jx.find('eeee') != -1:
                 String = jx.split(':')
@@ -141,7 +129,6 @@ def StartSavingTerrestrialChannels():
         if not SaveBouquetTerrestrial():
             CreateBouquetForce()
         return True
-
 
 def TransferBouquetTerrestrialFinal():
 
@@ -180,14 +167,13 @@ def SearchIPTV():
         return iptv_list
 
 def StartProcess(link, type, Personal):
-
     def LamedbRestore():
         try:
             TrasponderListNewLamedb = open(Directory + '/NGsetting/Temp/TrasponderListNewLamedb', 'w')
             ServiceListNewLamedb = open(Directory + '/NGsetting/Temp/ServiceListNewLamedb', 'w')
             inTransponder = False
             inService = False
-            infile = open('/etc/enigma2/lamedb')
+            infile = open('/etc/enigma2/lamedb', 'r')
             while 1:
                 line = infile.readline()
                 if not line:
@@ -208,21 +194,21 @@ def StartProcess(link, type, Personal):
             ServiceListNewLamedb.close()
             WritingLamedbFinal = open('/etc/enigma2/lamedb', 'w')
             WritingLamedbFinal.write('eDVB services /4/\n')
-            TrasponderListNewLamedb = open(Directory + '/NGsetting/Temp/TrasponderListNewLamedb').readlines()
+            TrasponderListNewLamedb = open(Directory + '/NGsetting/Temp/TrasponderListNewLamedb', 'r').readlines()
             for x in TrasponderListNewLamedb:
                 WritingLamedbFinal.write(x)
             try:
-                TrasponderListOldLamedb = open(Directory + '/NGsetting/Temp/TrasponderListOldLamedb').readlines()
+                TrasponderListOldLamedb = open(Directory + '/NGsetting/Temp/TrasponderListOldLamedb', 'r').readlines()
                 for x in TrasponderListOldLamedb:
                     WritingLamedbFinal.write(x)
             except:
                 pass
             WritingLamedbFinal.write('end\n')
-            ServiceListNewLamedb = open(Directory + '/NGsetting/Temp/ServiceListNewLamedb').readlines()
+            ServiceListNewLamedb = open(Directory + '/NGsetting/Temp/ServiceListNewLamedb', 'r').readlines()
             for x in ServiceListNewLamedb:
                 WritingLamedbFinal.write(x)
             try:
-                ServiceListOldLamedb = open(Directory + '/NGsetting/Temp/ServiceListOldLamedb').readlines()
+                ServiceListOldLamedb = open(Directory + '/NGsetting/Temp/ServiceListOldLamedb', 'r').readlines()
                 for x in ServiceListOldLamedb:
                     WritingLamedbFinal.write(x)
             except:
@@ -250,13 +236,19 @@ def StartProcess(link, type, Personal):
                 with open(dir, 'wb') as f:
                     f.write(url_zip.content)
             if os.path.exists(dir):
-                os.system('mkdir ' + Directory + '/NGsetting/Temp/setting')
-                try:
-                    os.system('unzip ' + Directory + '/NGsetting/Temp/listaE2.zip -d  ' + Directory + '/NGsetting/Temp/setting')
-                except:
-                    pass
-                os.system('mkdir ' + Directory + '/NGsetting/Temp/enigma2')
-                os.system('find ' + Directory + '/NGsetting/Temp/setting -type f -print | sed \'s/ /" "/g\'| awk \'{ str=$0; sub(/\\.\\//, "", str); gsub(/.*\\//, "", str);print "mv " $0 " ' + Directory + '/NGsetting/Temp/enigma2/"str }\' | sh')
+                import zipfile
+                if not os.path.exists(Directory + '/NGsetting/Temp/setting'):
+                    os.system('mkdir ' + Directory + '/NGsetting/Temp/setting')
+                image_zip = zipfile.ZipFile(Directory + '/NGsetting/Temp/listaE2.zip')
+                image_zip.extractall(Directory + '/NGsetting/Temp/setting')
+                if not os.path.exists(Directory + '/NGsetting/Temp/enigma2'):
+                    os.system('mkdir ' + Directory + '/NGsetting/Temp/enigma2')
+                dir_setting = os.listdir('/usr/lib/enigma2/python/Plugins/Extensions/NGsetting/Moduli/NGsetting/Temp/setting/')
+                name_setting = dir_setting[0]
+                dir_name = '/usr/lib/enigma2/python/Plugins/Extensions/NGsetting/Moduli/NGsetting/Temp/setting/' + name_setting
+                destination = '/usr/lib/enigma2/python/Plugins/Extensions/NGsetting/Moduli/NGsetting/Temp/enigma2'
+                for filename in glob.glob(os.path.join(dir_name, '*')):
+                    shutil.copy(filename, destination)
                 if os.path.exists(Directory + '/NGsetting/Temp/enigma2/lamedb'):
                     return True
             return False
@@ -289,7 +281,6 @@ def StartProcess(link, type, Personal):
             SaveList(list)
         except:
             return
-
         return True
 
     def TransferPersonalSetting():
@@ -309,12 +300,12 @@ def StartProcess(link, type, Personal):
 
     def CreateUserbouquetPersonalSetting():
         try:
-            jw = open('/usr/lib/enigma2/python/Plugins/Extensions/NGsetting/Moduli/NGsetting/SelectBack')
+            jw = open('/usr/lib/enigma2/python/Plugins/Extensions/NGsetting/Moduli/NGsetting/SelectBack', 'r')
             jjw = jw.readlines()
             jw.close()
         except:
             pass
-        jRewriteBouquet = open('/etc/enigma2/bouquets.tv')
+        jRewriteBouquet = open('/etc/enigma2/bouquets.tv', 'r')
         RewriteBouquet = jRewriteBouquet.readlines()
         jRewriteBouquet.close()
         WriteBouquet = open('/etc/enigma2/bouquets.tv', 'w')
@@ -346,9 +337,9 @@ def StartProcess(link, type, Personal):
             os.system('rm -rf /etc/enigma2/lamedb')
             os.system('rm -rf /etc/enigma2/*.radio')
             os.system('rm -rf /etc/enigma2/*.tv')
-            os.system('cp -rf ' + Directory + '/NGsetting/Temp/enigma2/*.tv  /etc/enigma2/')
-            os.system('cp -rf ' + Directory + '/NGsetting/Temp/enigma2/*.radio  /etc/enigma2/')
-            os.system('cp -rf ' + Directory + '/NGsetting/Temp/enigma2/lamedb  /etc/enigma2/')
+            os.system('cp -rf ' + Directory + '/NGsetting/Temp/enigma2/*.tv /etc/enigma2/')
+            os.system('cp -rf ' + Directory + '/NGsetting/Temp/enigma2/*.radio /etc/enigma2/')
+            os.system('cp -rf ' + Directory + '/NGsetting/Temp/enigma2/lamedb /etc/enigma2/')
             if not os.path.exists('/etc/enigma2/blacklist'):
                 os.system('cp -rf ' + Directory + '/NGsetting/Temp/enigma2/blacklist /etc/enigma2/')
             if not os.path.exists('/etc/enigma2/whitelist'):

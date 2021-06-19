@@ -1,5 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: UTF-8 -*-
+# Please don't remove this disclaimer
+# modified by Madhouse to run under Python2/3
 from Components.Language import language
 from Tools.Directories import resolveFilename, SCOPE_LANGUAGE
 import os
