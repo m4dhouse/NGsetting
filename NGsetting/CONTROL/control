@@ -1,0 +1,10 @@
+Package: enigma2-plugin-extensions-ngsetting
+Version: 1.4
+Section: enigma2
+Priority: optional
+Maintainer: m43c0,ftp21 & mmark <m43c0@live.it>
+Architecture: all
+OE: Enigma2 Plugin
+Homepage: http://www.dream-elite.net
+Description: NGsetting
+Source: none
