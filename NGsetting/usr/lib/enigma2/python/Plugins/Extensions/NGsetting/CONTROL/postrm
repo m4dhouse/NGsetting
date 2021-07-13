@@ -1,0 +1,15 @@
+#!/bin/sh
+echo
+echo "A shell script which is executed after uninstallation of the package:"
+echo
+echo "Name: NGsetting for OE2.0"
+echo
+echo "uninstall NGsetting ..."
+
+rm -rf /usr/lib/enigma2/python/Plugins/Extensions/NGsetting &> /dev/null
+if [ ! -d /usr/lib/enigma2/python/Plugins/Extensions/NGsetting ]; then
+     echo
+     echo "Plugin Successfully Removed."
+fi
+echo
+exit 0

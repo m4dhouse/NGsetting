@@ -1,0 +1,3 @@
+#!/bin/sh
+rm -rf /usr/lib/enigma2/python/Plugins/Extensions/NGsetting &> /dev/null
+exit 0
